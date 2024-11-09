@@ -1,0 +1,250 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 600px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+             #loadingBar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width: 100%;
+                 height: 600px;
+                 background-color:rgba(200,200,200,0.8);
+                 -webkit-transition: all 0.5s ease;
+                 -moz-transition: all 0.5s ease;
+                 -ms-transition: all 0.5s ease;
+                 -o-transition: all 0.5s ease;
+                 transition: all 0.5s ease;
+                 opacity:1;
+             }
+
+             #bar {
+                 position:absolute;
+                 top:0px;
+                 left:0px;
+                 width:20px;
+                 height:20px;
+                 margin:auto auto auto auto;
+                 border-radius:11px;
+                 border:2px solid rgba(30,30,30,0.05);
+                 background: rgb(0, 173, 246); /* Old browsers */
+                 box-shadow: 2px 0px 4px rgba(0,0,0,0.4);
+             }
+
+             #border {
+                 position:absolute;
+                 top:10px;
+                 left:10px;
+                 width:500px;
+                 height:23px;
+                 margin:auto auto auto auto;
+                 box-shadow: 0px 0px 4px rgba(0,0,0,0.2);
+                 border-radius:10px;
+             }
+
+             #text {
+                 position:absolute;
+                 top:8px;
+                 left:530px;
+                 width:30px;
+                 height:50px;
+                 margin:auto auto auto auto;
+                 font-size:22px;
+                 color: #000000;
+             }
+
+             div.outerBorder {
+                 position:relative;
+                 top:400px;
+                 width:600px;
+                 height:44px;
+                 margin:auto auto auto auto;
+                 border:8px solid rgba(0,0,0,0.1);
+                 background: rgb(252,252,252); /* Old browsers */
+                 background: -moz-linear-gradient(top,  rgba(252,252,252,1) 0%, rgba(237,237,237,1) 100%); /* FF3.6+ */
+                 background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,252,252,1)), color-stop(100%,rgba(237,237,237,1))); /* Chrome,Safari4+ */
+                 background: -webkit-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Chrome10+,Safari5.1+ */
+                 background: -o-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* Opera 11.10+ */
+                 background: -ms-linear-gradient(top,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* IE10+ */
+                 background: linear-gradient(to bottom,  rgba(252,252,252,1) 0%,rgba(237,237,237,1) 100%); /* W3C */
+                 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfcfc', endColorstr='#ededed',GradientType=0 ); /* IE6-9 */
+                 border-radius:72px;
+                 box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
+             }
+             
+
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+            <div id="loadingBar">
+              <div class="outerBorder">
+                <div id="text">0%</div>
+                <div id="border">
+                  <div id="bar"></div>
+                </div>
+              </div>
+            </div>
+        
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"color": "red", "id": "mock", "label": "mock", "shape": "dot", "size": 10}, {"color": "red", "id": "template", "label": "template", "shape": "dot", "size": 10}, {"color": "red", "id": "thorlabs", "label": "thorlabs", "shape": "dot", "size": 10}, {"color": "red", "id": "teaching", "label": "teaching", "shape": "dot", "size": 10}, {"color": "red", "id": "newport", "label": "newport", "shape": "dot", "size": 10}, {"color": "red", "id": "daqmx", "label": "daqmx", "shape": "dot", "size": 10}, {"color": "red", "id": "physik_instrumente", "label": "physik_instrumente", "shape": "dot", "size": 10}, {"color": "red", "id": "physical_measurements", "label": "physical_measurements", "shape": "dot", "size": 10}, {"color": "red", "id": "pid", "label": "pid", "shape": "dot", "size": 10}, {"color": "red", "id": "andor", "label": "andor", "shape": "dot", "size": 10}, {"color": "red", "id": "smaract", "label": "smaract", "shape": "dot", "size": 10}, {"color": "red", "id": "mockexamples", "label": "mockexamples", "shape": "dot", "size": 10}, {"color": "red", "id": "keithley", "label": "keithley", "shape": "dot", "size": 10}, {"color": "red", "id": "stellarnet", "label": "stellarnet", "shape": "dot", "size": 10}, {"color": "red", "id": "oceaninsight", "label": "oceaninsight", "shape": "dot", "size": 10}, {"color": "red", "id": "hamamatsu", "label": "hamamatsu", "shape": "dot", "size": 10}, {"color": "red", "id": "arduino_old", "label": "arduino_old", "shape": "dot", "size": 10}, {"color": "red", "id": "signal_recovery", "label": "signal_recovery", "shape": "dot", "size": 10}, {"color": "red", "id": "raspberry", "label": "raspberry", "shape": "dot", "size": 10}, {"color": "red", "id": "zaber", "label": "zaber", "shape": "dot", "size": 10}, {"color": "red", "id": "demo", "label": "demo", "shape": "dot", "size": 10}, {"color": "red", "id": "horiba", "label": "horiba", "shape": "dot", "size": 10}, {"color": "red", "id": "piezosystemjena", "label": "piezosystemjena", "shape": "dot", "size": 10}, {"color": "red", "id": "spectrolight", "label": "spectrolight", "shape": "dot", "size": 10}, {"color": "red", "id": "moke", "label": "moke", "shape": "dot", "size": 10}, {"color": "red", "id": "ophir", "label": "ophir", "shape": "dot", "size": 10}, {"color": "red", "id": "chopper", "label": "chopper", "shape": "dot", "size": 10}, {"color": "red", "id": "lakeshore", "label": "lakeshore", "shape": "dot", "size": 10}, {"color": "red", "id": "iumi", "label": "iumi", "shape": "dot", "size": 10}, {"color": "red", "id": "nkt", "label": "nkt", "shape": "dot", "size": 10}, {"color": "red", "id": "orsay", "label": "orsay", "shape": "dot", "size": 10}, {"color": "red", "id": "arduino", "label": "arduino", "shape": "dot", "size": 10}, {"color": "red", "id": "hinds", "label": "hinds", "shape": "dot", "size": 10}, {"color": "red", "id": "picoquant", "label": "picoquant", "shape": "dot", "size": 10}, {"color": "red", "id": "nidaqmx", "label": "nidaqmx", "shape": "dot", "size": 10}, {"color": "red", "id": "arducam", "label": "arducam", "shape": "dot", "size": 10}, {"color": "red", "id": "opencv", "label": "opencv", "shape": "dot", "size": 10}, {"color": "red", "id": "pco", "label": "pco", "shape": "dot", "size": 10}, {"color": "red", "id": "fkk", "label": "fkk", "shape": "dot", "size": 10}, {"color": "red", "id": "picotechnology", "label": "picotechnology", "shape": "dot", "size": 10}, {"color": "red", "id": "rigol", "label": "rigol", "shape": "dot", "size": 10}, {"color": "red", "id": "rohdeschwarz", "label": "rohdeschwarz", "shape": "dot", "size": 10}, {"color": "red", "id": "holoeye", "label": "holoeye", "shape": "dot", "size": 10}, {"color": "red", "id": "greateyes", "label": "greateyes", "shape": "dot", "size": 10}, {"color": "red", "id": "myrep", "label": "myrep", "shape": "dot", "size": 10}, {"color": "red", "id": "amplitude", "label": "amplitude", "shape": "dot", "size": 10}, {"color": "red", "id": "qutools", "label": "qutools", "shape": "dot", "size": 10}, {"color": "red", "id": "supersupplier", "label": "supersupplier", "shape": "dot", "size": 10}, {"color": "red", "id": "ftir", "label": "ftir", "shape": "dot", "size": 10}, {"color": "red", "id": "mydaqscan", "label": "mydaqscan", "shape": "dot", "size": 10}, {"color": "red", "id": "jtlyon", "label": "jtlyon", "shape": "dot", "size": 10}, {"color": "red", "id": "bronkhorst", "label": "bronkhorst", "shape": "dot", "size": 10}, {"color": "red", "id": "photoino", "label": "photoino", "shape": "dot", "size": 10}, {"color": "red", "id": "bnc", "label": "bnc", "shape": "dot", "size": 10}, {"color": "red", "id": "genicam", "label": "genicam", "shape": "dot", "size": 10}, {"color": "red", "id": "leco", "label": "leco", "shape": "dot", "size": 10}, {"color": "red", "id": "flim", "label": "flim", "shape": "dot", "size": 10}, {"color": "red", "id": "femto", "label": "femto", "shape": "dot", "size": 10}, {"color": "red", "id": "pylablib", "label": "pylablib", "shape": "dot", "size": 10}, {"color": "red", "id": "zurichinst", "label": "zurichinst", "shape": "dot", "size": 10}, {"color": "red", "id": "ftirjm", "label": "ftirjm", "shape": "dot", "size": 10}, {"color": "red", "id": "gaignegin", "label": "gaignegin", "shape": "dot", "size": 10}, {"color": "red", "id": "piezoconcept", "label": "piezoconcept", "shape": "dot", "size": 10}, {"color": "red", "id": "optosigma", "label": "optosigma", "shape": "dot", "size": 10}, {"color": "red", "id": "basler", "label": "basler", "shape": "dot", "size": 10}, {"color": "red", "id": "physikinstrumente", "label": "physikinstrumente", "shape": "dot", "size": 10}, {"color": "red", "id": "avantes", "label": "avantes", "shape": "dot", "size": 10}, {"color": "red", "id": "sciencetec", "label": "sciencetec", "shape": "dot", "size": 10}, {"color": "red", "id": "datamixer", "label": "datamixer", "shape": "dot", "size": 10}, {"color": "red", "id": "lecroy", "label": "lecroy", "shape": "dot", "size": 10}, {"color": "red", "id": "keysight", "label": "keysight", "shape": "dot", "size": 10}, {"color": "red", "id": "alcatel", "label": "alcatel", "shape": "dot", "size": 10}, {"color": "red", "id": "vernier", "label": "vernier", "shape": "dot", "size": 10}, {"color": "red", "id": "uniblitz", "label": "uniblitz", "shape": "dot", "size": 10}, {"color": "red", "id": "template_new", "label": "template_new", "shape": "dot", "size": 10}, {"color": "red", "id": "redpitaya", "label": "redpitaya", "shape": "dot", "size": 10}, {"color": "red", "id": "phidgets", "label": "phidgets", "shape": "dot", "size": 10}, {"color": "red", "id": "cethil", "label": "cethil", "shape": "dot", "size": 10}, {"color": "red", "id": "optimisation", "label": "optimisation", "shape": "dot", "size": 10}, {"color": "red", "id": "PCOEdge", "label": "PCOEdge", "shape": "dot", "size": 10}, {"color": "red", "id": "specs", "label": "specs", "shape": "dot", "size": 10}, {"color": "red", "id": "cn0391", "label": "cn0391", "shape": "dot", "size": 10}, {"color": "red", "id": "spectrum_instrumentation", "label": "spectrum_instrumentation", "shape": "dot", "size": 10}, {"color": "red", "id": "MozzaSpectro", "label": "MozzaSpectro", "shape": "dot", "size": 10}, {"color": "red", "id": "princeton_instruments", "label": "princeton_instruments", "shape": "dot", "size": 10}, {"color": "red", "id": "AvaSpec", "label": "AvaSpec", "shape": "dot", "size": 10}, {"color": "red", "id": "pylablib_camera", "label": "pylablib_camera", "shape": "dot", "size": 10}, {"color": "red", "id": "arduino_ubuntu", "label": "arduino_ubuntu", "shape": "dot", "size": 10}, {"color": "red", "id": "oceanoptics_seabreeze", "label": "oceanoptics_seabreeze", "shape": "dot", "size": 10}, {"color": "red", "id": "KDC101", "label": "KDC101", "shape": "dot", "size": 10}, {"color": "red", "id": "simu_scan", "label": "simu_scan", "shape": "dot", "size": 10}, {"color": "red", "id": "uniblitz3", "label": "uniblitz3", "shape": "dot", "size": 10}, {"color": "red", "id": "PIDStabFringes", "label": "PIDStabFringes", "shape": "dot", "size": 10}, {"color": "red", "id": "crystal_technology", "label": "crystal_technology", "shape": "dot", "size": 10}, {"color": "red", "id": "standing_wave", "label": "standing_wave", "shape": "dot", "size": 10}, {"color": "red", "id": "tadetector-main", "label": "tadetector-main", "shape": "dot", "size": 10}, {"color": "red", "id": "tcspc_arduino", "label": "tcspc_arduino", "shape": "dot", "size": 10}, {"color": "red", "id": "siglent_v0", "label": "siglent_v0", "shape": "dot", "size": 10}, {"color": "red", "id": "dilor_z40", "label": "dilor_z40", "shape": "dot", "size": 10}, {"color": "red", "id": "fab1b", "label": "fab1b", "shape": "dot", "size": 10}, {"color": "red", "id": "stanford_research_systems", "label": "stanford_research_systems", "shape": "dot", "size": 10}, {"color": "red", "id": "s2qt_odmr", "label": "s2qt_odmr", "shape": "dot", "size": 10}, {"color": "red", "id": "optical_2D_shaping", "label": "optical_2D_shaping", "shape": "dot", "size": 10}, {"color": "red", "id": "TelemetrixArduinoTempControl", "label": "TelemetrixArduinoTempControl", "shape": "dot", "size": 10}, {"color": "#97c2fc", "id": "PyMoDAQ", "label": "PyMoDAQ", "shape": "dot"}, {"color": "#97c2fc", "id": "rgeneaux", "label": "rgeneaux", "shape": "dot"}, {"color": "#97c2fc", "id": "Attolab", "label": "Attolab", "shape": "dot"}, {"color": "#97c2fc", "id": "jerlfan", "label": "jerlfan", "shape": "dot"}, {"color": "#97c2fc", "id": "YbrtGAK", "label": "YbrtGAK", "shape": "dot"}, {"color": "#97c2fc", "id": "LMSC-NTappy", "label": "LMSC-NTappy", "shape": "dot"}, {"color": "#97c2fc", "id": "NicoloAccanto", "label": "NicoloAccanto", "shape": "dot"}, {"color": "#97c2fc", "id": "FaWa70", "label": "FaWa70", "shape": "dot"}, {"color": "#97c2fc", "id": "sq-lumin", "label": "sq-lumin", "shape": "dot"}, {"color": "#97c2fc", "id": "Ashwolaa", "label": "Ashwolaa", "shape": "dot"}, {"color": "#97c2fc", "id": "runrunm", "label": "runrunm", "shape": "dot"}, {"color": "#97c2fc", "id": "DQML-EPFL", "label": "DQML-EPFL", "shape": "dot"}, {"color": "#97c2fc", "id": "PierreJeunesse", "label": "PierreJeunesse", "shape": "dot"}, {"color": "#97c2fc", "id": "nano713", "label": "nano713", "shape": "dot"}, {"color": "#97c2fc", "id": "TheFkOrganization", "label": "TheFkOrganization", "shape": "dot"}, {"color": "#97c2fc", "id": "slepar", "label": "slepar", "shape": "dot"}, {"color": "#97c2fc", "id": "Montpellier-S2QT", "label": "Montpellier-S2QT", "shape": "dot"}, {"color": "#97c2fc", "id": "NicolasGuenaux", "label": "NicolasGuenaux", "shape": "dot"}, {"color": "#97c2fc", "id": "bernhardlang", "label": "bernhardlang", "shape": "dot"}, {"color": "#97c2fc", "id": "rbeignon", "label": "rbeignon", "shape": "dot"}, {"color": "#97c2fc", "id": "NanjeofKro", "label": "NanjeofKro", "shape": "dot"}, {"color": "#97c2fc", "id": "ccabello99", "label": "ccabello99", "shape": "dot"}, {"color": "#97c2fc", "id": "pymeasure", "label": "pymeasure", "shape": "dot"}, {"color": "#97c2fc", "id": "lukeb5", "label": "lukeb5", "shape": "dot"}, {"color": "#97c2fc", "id": "calpionelle", "label": "calpionelle", "shape": "dot"}, {"color": "#97c2fc", "id": "regisdebord", "label": "regisdebord", "shape": "dot"}, {"color": "#97c2fc", "id": "fmadec", "label": "fmadec", "shape": "dot"}, {"color": "#97c2fc", "id": "Titouan-Gadeyne", "label": "Titouan-Gadeyne", "shape": "dot"}, {"color": "#97c2fc", "id": "CRPP-META", "label": "CRPP-META", "shape": "dot"}, {"color": "#97c2fc", "id": "Soungai00", "label": "Soungai00", "shape": "dot"}, {"color": "#97c2fc", "id": "Belondra", "label": "Belondra", "shape": "dot"}, {"color": "#97c2fc", "id": "jdh13", "label": "jdh13", "shape": "dot"}, {"color": "#97c2fc", "id": "seb5g", "label": "seb5g", "shape": "dot"}, {"color": "#97c2fc", "id": "BenediktBurger", "label": "BenediktBurger", "shape": "dot"}, {"color": "#97c2fc", "id": "Semptum", "label": "Semptum", "shape": "dot"}, {"color": "#97c2fc", "id": "Enzo77360", "label": "Enzo77360", "shape": "dot"}, {"color": "#97c2fc", "id": "quantumm", "label": "quantumm", "shape": "dot"}, {"color": "#97c2fc", "id": "bzarie26", "label": "bzarie26", "shape": "dot"}, {"color": "#97c2fc", "id": "martinluttmann", "label": "martinluttmann", "shape": "dot"}]);
+                  edges = new vis.DataSet([{"dashes": true, "from": "mockexamples", "to": "mock"}, {"dashes": true, "from": "template_new", "to": "template"}, {"dashes": true, "from": "PIDStabFringes", "to": "pid"}, {"dashes": true, "from": "arduino_old", "to": "arduino"}, {"dashes": true, "from": "arduino_ubuntu", "to": "arduino"}, {"dashes": true, "from": "PCOEdge", "to": "pco"}, {"dashes": true, "from": "ftirjm", "to": "ftir"}, {"dashes": true, "from": "pylablib_camera", "to": "pylablib"}, {"dashes": true, "from": "uniblitz3", "to": "uniblitz"}, {"from": "mock", "to": "PyMoDAQ"}, {"from": "template", "to": "PyMoDAQ"}, {"from": "thorlabs", "to": "PyMoDAQ"}, {"from": "teaching", "to": "PyMoDAQ"}, {"from": "newport", "to": "PyMoDAQ"}, {"from": "daqmx", "to": "PyMoDAQ"}, {"from": "physik_instrumente", "to": "PyMoDAQ"}, {"from": "physical_measurements", "to": "PyMoDAQ"}, {"from": "pid", "to": "PyMoDAQ"}, {"from": "andor", "to": "PyMoDAQ"}, {"from": "smaract", "to": "PyMoDAQ"}, {"from": "mockexamples", "to": "PyMoDAQ"}, {"from": "keithley", "to": "PyMoDAQ"}, {"from": "oceaninsight", "to": "PyMoDAQ"}, {"from": "signal_recovery", "to": "PyMoDAQ"}, {"from": "raspberry", "to": "PyMoDAQ"}, {"from": "demo", "to": "PyMoDAQ"}, {"from": "horiba", "to": "PyMoDAQ"}, {"from": "spectrolight", "to": "PyMoDAQ"}, {"from": "moke", "to": "PyMoDAQ"}, {"from": "iumi", "to": "PyMoDAQ"}, {"from": "orsay", "to": "PyMoDAQ"}, {"from": "picoquant", "to": "PyMoDAQ"}, {"from": "nidaqmx", "to": "PyMoDAQ"}, {"from": "opencv", "to": "PyMoDAQ"}, {"from": "holoeye", "to": "PyMoDAQ"}, {"from": "amplitude", "to": "PyMoDAQ"}, {"from": "ftir", "to": "PyMoDAQ"}, {"from": "genicam", "to": "PyMoDAQ"}, {"from": "flim", "to": "PyMoDAQ"}, {"from": "femto", "to": "PyMoDAQ"}, {"from": "ftirjm", "to": "PyMoDAQ"}, {"from": "piezoconcept", "to": "PyMoDAQ"}, {"from": "avantes", "to": "PyMoDAQ"}, {"from": "datamixer", "to": "PyMoDAQ"}, {"from": "keysight", "to": "PyMoDAQ"}, {"from": "vernier", "to": "PyMoDAQ"}, {"from": "redpitaya", "to": "PyMoDAQ"}, {"from": "optimisation", "to": "PyMoDAQ"}, {"from": "arduino", "to": "PyMoDAQ"}, {"from": "crystal_technology", "to": "PyMoDAQ"}, {"from": "standing_wave", "to": "PyMoDAQ"}, {"from": "stanford_research_systems", "to": "PyMoDAQ"}, {"from": "optical_2D_shaping", "to": "PyMoDAQ"}, {"from": "stellarnet", "to": "rgeneaux"}, {"from": "specs", "to": "rgeneaux"}, {"from": "fab1b", "to": "rgeneaux"}, {"from": "hamamatsu", "to": "Attolab"}, {"from": "zaber", "to": "Attolab"}, {"from": "arducam", "to": "Attolab"}, {"from": "greateyes", "to": "Attolab"}, {"from": "pylablib", "to": "Attolab"}, {"from": "physikinstrumente", "to": "Attolab"}, {"from": "lecroy", "to": "Attolab"}, {"from": "uniblitz", "to": "Attolab"}, {"from": "PCOEdge", "to": "Attolab"}, {"from": "pylablib_camera", "to": "Attolab"}, {"from": "PIDStabFringes", "to": "Attolab"}, {"from": "arduino_old", "to": "jerlfan"}, {"from": "dilor_z40", "to": "jerlfan"}, {"from": "piezosystemjena", "to": "LMSC-NTappy"}, {"from": "keithley", "to": "LMSC-NTappy"}, {"from": "princeton_instruments", "to": "LMSC-NTappy"}, {"from": "oceanoptics_seabreeze", "to": "LMSC-NTappy"}, {"from": "template", "to": "NicoloAccanto"}, {"from": "ophir", "to": "FaWa70"}, {"from": "chopper", "to": "sq-lumin"}, {"from": "mydaqscan", "to": "sq-lumin"}, {"from": "tadetector-main", "to": "sq-lumin"}, {"from": "lakeshore", "to": "Ashwolaa"}, {"from": "nkt", "to": "runrunm"}, {"from": "supersupplier", "to": "runrunm"}, {"from": "thorlabs", "to": "DQML-EPFL"}, {"from": "pco", "to": "DQML-EPFL"}, {"from": "spectrum_instrumentation", "to": "DQML-EPFL"}, {"from": "arduino", "to": "PierreJeunesse"}, {"from": "basler", "to": "PierreJeunesse"}, {"from": "hinds", "to": "nano713"}, {"from": "rigol", "to": "nano713"}, {"from": "optosigma", "to": "nano713"}, {"from": "fkk", "to": "TheFkOrganization"}, {"from": "jtlyon", "to": "TheFkOrganization"}, {"from": "supersupplier", "to": "TheFkOrganization"}, {"from": "picotechnology", "to": "slepar"}, {"from": "rohdeschwarz", "to": "Montpellier-S2QT"}, {"from": "s2qt_odmr", "to": "Montpellier-S2QT"}, {"from": "myrep", "to": "NicolasGuenaux"}, {"from": "siglent_v0", "to": "NicolasGuenaux"}, {"from": "qutools", "to": "bernhardlang"}, {"from": "photoino", "to": "bernhardlang"}, {"from": "cn0391", "to": "bernhardlang"}, {"from": "simu_scan", "to": "bernhardlang"}, {"from": "tcspc_arduino", "to": "bernhardlang"}, {"from": "arduino", "to": "rbeignon"}, {"from": "bronkhorst", "to": "NanjeofKro"}, {"from": "bnc", "to": "ccabello99"}, {"from": "leco", "to": "pymeasure"}, {"from": "zurichinst", "to": "lukeb5"}, {"from": "gaignegin", "to": "calpionelle"}, {"from": "TelemetrixArduinoTempControl", "to": "calpionelle"}, {"from": "lakeshore", "to": "regisdebord"}, {"from": "sciencetec", "to": "fmadec"}, {"from": "alcatel", "to": "Titouan-Gadeyne"}, {"from": "nkt", "to": "CRPP-META"}, {"from": "template_new", "to": "Soungai00"}, {"from": "cethil", "to": "Soungai00"}, {"from": "redpitaya", "to": "Belondra"}, {"from": "phidgets", "to": "jdh13"}, {"from": "redpitaya", "to": "seb5g"}, {"from": "basler", "to": "BenediktBurger"}, {"from": "basler", "to": "Semptum"}, {"from": "MozzaSpectro", "to": "Enzo77360"}, {"from": "AvaSpec", "to": "Enzo77360"}, {"from": "KDC101", "to": "Enzo77360"}, {"from": "arduino_ubuntu", "to": "quantumm"}, {"from": "uniblitz3", "to": "bzarie26"}, {"from": "spectrum_instrumentation", "to": "martinluttmann"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": false
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+                      network.on("stabilizationProgress", function(params) {
+                          document.getElementById('loadingBar').removeAttribute("style");
+                          var maxWidth = 496;
+                          var minWidth = 20;
+                          var widthFactor = params.iterations/params.total;
+                          var width = Math.max(minWidth,maxWidth * widthFactor);
+                          document.getElementById('bar').style.width = width + 'px';
+                          document.getElementById('text').innerHTML = Math.round(widthFactor*100) + '%';
+                      });
+                      network.once("stabilizationIterationsDone", function() {
+                          document.getElementById('text').innerHTML = '100%';
+                          document.getElementById('bar').style.width = '496px';
+                          document.getElementById('loadingBar').style.opacity = 0;
+                          // really clean the dom element
+                          setTimeout(function () {document.getElementById('loadingBar').style.display = 'none';}, 500);
+                      });
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
